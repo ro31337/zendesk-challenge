@@ -1,3 +1,5 @@
+require './search_engine'
+
 # Factory method for menu locations
 module Location
   def self.get(props)
@@ -53,6 +55,8 @@ end
 
 # Menu location, performs O(N) search over model entries
 class ArrayLocation < MenuLocation
+  include SearchEngine
+
   def next
     menu = props.first.props.keys
 
@@ -73,15 +77,5 @@ class ArrayLocation < MenuLocation
     puts 'Enter search value:'
     print '> '
     gets.chomp.strip
-  end
-
-  def search(term, value)
-    results = props.filter do |model|
-      model.props[term].eq?(value)
-    end
-    results.each do |result|
-      puts '=' * 40
-      puts result.to_s
-    end
   end
 end
