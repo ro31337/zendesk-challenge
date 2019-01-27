@@ -1,0 +1,4 @@
+require './models'
+
+puts 'ok'
+
