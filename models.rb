@@ -39,6 +39,12 @@ class Model
       end
     end
   end
+
+  def to_s
+    props.reduce('') do |memo, (k, matcher)|
+      memo += "#{k.ljust(15, ' ')} : #{matcher.value}\n"
+    end
+  end
 end
 
 class User < Model
