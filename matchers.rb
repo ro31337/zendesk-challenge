@@ -18,3 +18,9 @@ class ArrayMatcher < Matcher
   end
 end
 
+# Null object patter for matcher
+class NilMatcher
+  def self.eq?(_expected)
+    false
+  end
+end

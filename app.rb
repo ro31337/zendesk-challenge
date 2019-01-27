@@ -4,5 +4,7 @@ require './location'
 
 model = Root.new
 location = Location.get(model.props)
-location = location.next
-location = location.next
+
+loop do
+  location = location.next
+end

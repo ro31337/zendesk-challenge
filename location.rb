@@ -25,6 +25,7 @@ class MenuLocation
     loop do
       choice = Readline.readline('> ', true)
       choice.strip!
+      exit if %w[exit quit].include?(choice)
       return choice if menu.include?(choice)
       puts "ERROR: Incorrect choice \"#{choice}\""
     end
@@ -53,7 +54,7 @@ class HashLocation < MenuLocation
   end
 end
 
-# Menu location, performs O(N) search over model entries
+# Array location, performs O(N) search over model entries
 class ArrayLocation < MenuLocation
   include SearchEngine
 
@@ -63,6 +64,7 @@ class ArrayLocation < MenuLocation
     term = get_search_term(menu)
     value = get_search_value(menu)
     search(term, value)
+    self
   end
 
   private
