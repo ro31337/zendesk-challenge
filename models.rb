@@ -6,22 +6,24 @@ class Root
 
   def initialize
     @props = {}
+    load
   end
 
-  def self.load
-    instance = new
-    load_entity(instance, :users, User)
-    load_entity(instance, :organizations, Organization)
-    load_entity(instance, :tickets, Ticket)
-    instance
+  private
+
+  def load
+    load_entity(User)
+    load_entity(Organization)
+    load_entity(Ticket)
   end
 
-  def self.load_entity(instance, entity, klass)
+  def load_entity(klass)
+    entity = klass.to_s.downcase + 's'
     json = File.read("#{entity}.json")
     data = JSON.parse(json).map { |props| klass.new(props) }
     props = {}
     props[entity] = data
-    instance.props.merge!(props)
+    @props.merge!(props)
   end
 end
 
@@ -47,5 +49,3 @@ end
 
 class Ticket < Model
 end
-
-root = Root.load
