@@ -31,7 +31,7 @@ end
 class Model
   attr_accessor :props, :root
 
-  def initialize(props, root)
+  def initialize(props, root = nil)
     @root = root
     @props = props.update(props) do |_, v|
       if v.is_a?(Array)
