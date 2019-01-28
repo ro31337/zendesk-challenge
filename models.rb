@@ -55,16 +55,10 @@ class Model
   end
 end
 
-class User < Model
+module OrganizationRelationship
   include SearchEngine
 
-  def as_text
-    super + organizations
-  end
-
-  private
-
-  def organizations
+  def organization
     return '' unless @props['organization_id']
     results = search(@root.props['organizations'], '_id', @props['organization_id'].value)
     results.reduce('') do |memo, model|
@@ -73,8 +67,30 @@ class User < Model
   end
 end
 
+class User < Model
+  include OrganizationRelationship
+
+  def as_text
+    super + organization
+  end
+end
+
 class Organization < Model
 end
 
 class Ticket < Model
+  include OrganizationRelationship
+  include SearchEngine
+
+  def as_text
+    super + organization + submitter
+  end
+
+  def submitter
+    return '' unless @props['submitter_id']
+    results = search(@root.props['users'], '_id', @props['submitter_id'].value)
+    results.reduce('') do |memo, model|
+      memo += hash_to_str(model.props, '*submitter:')
+    end
+  end
 end
