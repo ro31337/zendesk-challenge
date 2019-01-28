@@ -55,23 +55,27 @@ class Model
   end
 end
 
-module OrganizationRelationship
+module Relationship
   include SearchEngine
 
-  def organization
-    return '' unless @props['organization_id']
-    results = search(@root.props['organizations'], '_id', @props['organization_id'].value)
+  def relationship(local_key, table, name, foreign_key = '_id')
+    return '' unless @props[local_key]
+    results = search(
+      @root.props[table],
+      foreign_key,
+      @props[local_key].value
+    )
     results.reduce('') do |memo, model|
-      memo += hash_to_str(model.props, '*organization:')
+      memo += hash_to_str(model.props, "*#{name}:")
     end
   end
 end
 
 class User < Model
-  include OrganizationRelationship
+  include Relationship
 
   def as_text
-    super + organization
+    super + relationship('organization_id', 'organizations', 'organization')
   end
 end
 
@@ -79,18 +83,12 @@ class Organization < Model
 end
 
 class Ticket < Model
-  include OrganizationRelationship
-  include SearchEngine
+  include Relationship
 
   def as_text
-    super + organization + submitter
-  end
-
-  def submitter
-    return '' unless @props['submitter_id']
-    results = search(@root.props['users'], '_id', @props['submitter_id'].value)
-    results.reduce('') do |memo, model|
-      memo += hash_to_str(model.props, '*submitter:')
-    end
+    super + \
+      relationship('organization_id', 'organizations', 'organization') + \
+      relationship('submitter_id', 'users', 'submitter') + \
+      relationship('assignee_id', 'users', 'assignee')
   end
 end
