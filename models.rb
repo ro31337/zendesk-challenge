@@ -55,10 +55,10 @@ class Model
   end
 end
 
-module Relationship
+module BelongsTo
   include SearchEngine
 
-  def relationship(local_key, table, name, foreign_key = '_id')
+  def belongs_to(local_key, table, name, foreign_key = '_id')
     return '' unless @props[local_key]
     results = search(
       @root.props[table],
@@ -72,10 +72,10 @@ module Relationship
 end
 
 class User < Model
-  include Relationship
+  include BelongsTo
 
   def as_text
-    super + relationship('organization_id', 'organizations', 'organization')
+    super + belongs_to('organization_id', 'organizations', 'organization')
   end
 end
 
@@ -83,12 +83,12 @@ class Organization < Model
 end
 
 class Ticket < Model
-  include Relationship
+  include BelongsTo
 
   def as_text
     super + \
-      relationship('organization_id', 'organizations', 'organization') + \
-      relationship('submitter_id', 'users', 'submitter') + \
-      relationship('assignee_id', 'users', 'assignee')
+      belongs_to('organization_id', 'organizations', 'organization') + \
+      belongs_to('submitter_id', 'users', 'submitter') + \
+      belongs_to('assignee_id', 'users', 'assignee')
   end
 end
