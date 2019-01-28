@@ -14,9 +14,14 @@ describe StringMatcher do
   it 'should handle nils' do
     expect(StringMatcher.new('foo').eq?(nil)).to be false
   end
+
+  it 'should have value' do
+    expect(StringMatcher.new('foo').value).to eq('foo')
+    expect(StringMatcher.new(123).value).to eq(123)
+  end
 end
 
-describe StringMatcher do
+describe ArrayMatcher do
   subject do
     ArrayMatcher.new(
       %w[foo bar]

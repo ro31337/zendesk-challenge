@@ -50,7 +50,7 @@ class Model
 
   def hash_to_str(hash, prefix = '')
     hash.reduce('') do |memo, (k, matcher)|
-      memo += "#{prefix}#{k.ljust(15, ' ')} => #{matcher.value}\n"
+      memo += "#{prefix}#{k.to_s.ljust(15, ' ')} => #{matcher.value}\n"
     end
   end
 end
