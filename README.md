@@ -39,7 +39,7 @@ $ ruby app.rb
 or with Docker:
 
 ```
-TODO
+$ docker run -it --name romanpushkin-zendesk-challenge ro31337/zendesk-challenge
 ```
 
 ## Tests
