@@ -1,4 +1,3 @@
-require 'pry'
 require './matchers'
 
 # Search engine, search over props in O(N)
