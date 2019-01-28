@@ -16,9 +16,7 @@ $ cat users.json | jq '.[].organization_id'
 
 (result is the non-distinct list of organization ids on users "table")
 
-Diagram:
-
-![diagram](https://www.plantuml.com/plantuml/img/VP2n2i9038RtF4MuIOKRNCMXeBiWEilPXZDuTvLBklZqbjYXWtNB1z__9wGH3LM7d02KDH6UAGNbliY3Nu8U3oc8u953h243j8PNeJgD5swVf1ESQWo5trO0C2TqMuVUeziuI-CEzxZgPyQDk_LYvBlbTmZ12XViyIoEXSZg_uaot3EhKZKJ6YhT-9OF)
+![image](https://user-images.githubusercontent.com/1477672/51815662-6c9a1280-2277-11e9-87b4-64247224ce8e.png)
 
 Shell commands to confirm the point (total number of unique entities for each type):
 
