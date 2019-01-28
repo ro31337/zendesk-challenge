@@ -1,5 +1,5 @@
 require './matchers'
-require './search_engine'
+require './relationships'
 require 'json'
 
 class Root
@@ -55,27 +55,15 @@ class Model
   end
 end
 
-module BelongsTo
-  include SearchEngine
-
-  def belongs_to(local_key, table, name, foreign_key = '_id')
-    return '' unless @props[local_key]
-    results = search(
-      @root.props[table],
-      foreign_key,
-      @props[local_key].value
-    )
-    results.reduce('') do |memo, model|
-      memo += hash_to_str(model.props, "*#{name}:")
-    end
-  end
-end
-
 class User < Model
   include BelongsTo
+  include HasMany
 
   def as_text
-    super + belongs_to('organization_id', 'organizations', 'organization')
+    super + \
+      has_many('submitter_id', 'tickets', 'ticket (submitter)', %w[_id subject]) + \
+      has_many('assignee_id', 'tickets', 'ticket (assignee)', %w[_id subject]) + \
+      belongs_to('organization_id', 'organizations', 'organization')
   end
 end
 
