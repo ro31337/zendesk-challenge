@@ -1,4 +1,5 @@
 require './matchers'
+require './search_engine'
 require 'json'
 
 class Root
@@ -20,7 +21,7 @@ class Root
   def load_entity(klass)
     entity = klass.to_s.downcase + 's'
     json = File.read("#{entity}.json")
-    data = JSON.parse(json).map { |props| klass.new(props) }
+    data = JSON.parse(json).map { |props| klass.new(props, self) }
     props = {}
     props[entity] = data
     @props.merge!(props)
@@ -28,9 +29,10 @@ class Root
 end
 
 class Model
-  attr_accessor :props
+  attr_accessor :props, :root
 
-  def initialize(props)
+  def initialize(props, root)
+    @root = root
     @props = props.update(props) do |_, v|
       if v.is_a?(Array)
         ArrayMatcher.new(v)
@@ -40,14 +42,35 @@ class Model
     end
   end
 
-  def to_s
-    props.reduce('') do |memo, (k, matcher)|
-      memo += "#{k.ljust(15, ' ')} : #{matcher.value}\n"
+  def as_text
+    hash_to_str(props)
+  end
+
+  private
+
+  def hash_to_str(hash, prefix = '')
+    hash.reduce('') do |memo, (k, matcher)|
+      memo += "#{prefix}#{k.ljust(15, ' ')} => #{matcher.value}\n"
     end
   end
 end
 
 class User < Model
+  include SearchEngine
+
+  def as_text
+    super + organizations
+  end
+
+  private
+
+  def organizations
+    return '' unless @props['organization_id']
+    results = search(@root.props['organizations'], '_id', @props['organization_id'].value)
+    results.reduce('') do |memo, model|
+      memo += hash_to_str(model.props, '*organization:')
+    end
+  end
 end
 
 class Organization < Model

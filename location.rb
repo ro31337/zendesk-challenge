@@ -72,11 +72,27 @@ class ArrayLocation < MenuLocation
     return origin if term == '..'
     value = search_value(term)
     return origin if value == '..'
-    search(term, value)
+    print_results(
+      search(props, term, value)
+    )
     self
   end
 
   private
+
+  def print_results(results)
+    if results.empty?
+      puts '(not found)'
+      return
+    end
+
+    puts "#{results.size} record(s) found:"
+
+    results.each do |result|
+      puts '=' * 40
+      puts result.as_text
+    end
+  end
 
   def search_term(menu)
     puts 'Enter search term (press Tab for autocomplete):'

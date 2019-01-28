@@ -8,7 +8,7 @@ end
 
 class StringMatcher < Matcher
   def eq?(expected)
-    @value.to_s == expected
+    @value.to_s == expected.to_s
   end
 end
 
