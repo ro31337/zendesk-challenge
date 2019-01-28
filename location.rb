@@ -2,11 +2,11 @@ require './search_engine'
 
 # Factory method for menu locations
 module Location
-  def self.get(props, origin = nil)
+  def self.get(props, origin = nil, path = nil)
     if props.is_a?(Array)
-      ArrayLocation.new(props, origin)
+      ArrayLocation.new(props, origin, path)
     elsif props.is_a?(Hash)
-      HashLocation.new(props, origin)
+      HashLocation.new(props, origin, path)
     else
       raise "Unsupported location type #{props.class}"
     end
@@ -15,16 +15,17 @@ end
 
 # Menu location abstract class
 class MenuLocation
-  attr_reader :props, :origin
+  attr_reader :props, :origin, :path
 
-  def initialize(props, origin = nil)
+  def initialize(props, origin = nil, path = nil)
     @props = props
     @origin = origin
+    @path = path
   end
 
   def select_from_menu(menu)
     loop do
-      choice = Readline.readline('> ', true)
+      choice = Readline.readline("#{@path}> ", true)
       choice.strip!
       exit if %w[exit quit].include?(choice)
       return choice if menu.include?(choice)
@@ -45,7 +46,7 @@ class HashLocation < MenuLocation
     usage(menu)
     choice = select_from_menu(menu)
     if props[choice]
-      Location.get(props[choice], self)
+      Location.get(props[choice], self, choice)
     else
       self
     end
@@ -69,7 +70,7 @@ class ArrayLocation < MenuLocation
 
     term = search_term(menu)
     return origin if term == '..'
-    value = search_value
+    value = search_value(term)
     return origin if value == '..'
     search(term, value)
     self
@@ -83,9 +84,10 @@ class ArrayLocation < MenuLocation
     select_from_menu(menu)
   end
 
-  def search_value
+  def search_value(suffix)
+    suffix = '.' + suffix if suffix
     puts 'Enter search value:'
-    print '> '
+    print "#{@path}#{suffix}> "
     gets.chomp.strip
   end
 end

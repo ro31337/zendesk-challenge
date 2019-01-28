@@ -18,6 +18,8 @@ module SearchEngine
       return
     end
 
+    puts "#{results.size} record(s) found:"
+
     results.each do |result|
       puts '=' * 40
       puts result.to_s
